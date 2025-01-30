@@ -10,7 +10,9 @@ from typing import Optional
 
 import datasets
 import numpy as np
-from datasets import ClassLabel, load_dataset, load_metric
+# from datasets import ClassLabel, load_dataset, load_metric
+from datasets import ClassLabel, load_dataset
+from evaluate import load as load_metric
 
 import transformers
 from transformers import (
@@ -388,7 +390,7 @@ def main():
   data_collator = DataCollatorForTokenClassification(tokenizer, pad_to_multiple_of=8 if training_args.fp16 else None)
 
   # Metrics
-  metric = load_metric("eval.py")
+  # metric = load_metric("eval.py")
 
   def compute_metrics(p):
     predictions, labels = p
