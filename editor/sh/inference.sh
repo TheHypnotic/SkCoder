@@ -1,4 +1,6 @@
-ROOT_DIR="/home/xxx/SkCoder"
+# ROOT_DIR="/home/xxx/SkCoder"
+ROOT_DIR="/content/SkCoder"
+
 WORKDIR=${ROOT_DIR}/editor
 export PYTHONPATH=$WORKDIR
 
