@@ -31,6 +31,8 @@ def get_parser():
 def main(args):
   # data = args.data
   assert args.data.exists() and args.data.is_dir()
+  LIST = ['test']
+  
   for part in LIST:
     print(part)
     sketch = iter([json.loads(line) for line in open(args.data / f'{part}_sketch.jsonl')])

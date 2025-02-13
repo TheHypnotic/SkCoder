@@ -19,6 +19,7 @@ def load_and_cache_gen_data(args, filename, pool, tokenizer, split_tag, only_src
     cache_fn = '{}/{}.pt'.format(args.cache_path, split_tag + ('_src' if only_src else '') + data_tag)
 
     examples = read_examples(filename, args.data_num, args.task)
+    print("Example sample:", examples[0]) 
 
     if is_sample:
         examples = random.sample(examples, min(100, len(examples)))
@@ -28,7 +29,7 @@ def load_and_cache_gen_data(args, filename, pool, tokenizer, split_tag, only_src
     #     calc_stats(examples)
     if os.path.exists(cache_fn) and not is_sample:
         logger.info("Load cache data from %s", cache_fn)
-        data = torch.load(cache_fn)
+        data = torch.load(cache_fn, weights_only=False)
     else:
         if is_sample:
             logger.info("Sample 5k data for computing bleu from %s", filename)
@@ -143,6 +144,7 @@ def load_and_cache_multi_gen_data(args, pool, tokenizer, split_tag, only_src=Fal
 
                 filename = get_filenames(args.data_dir, args.task, args.sub_task, split_tag)
                 examples = read_examples(filename, args.data_num, args.task)
+                
                 if is_sample:
                     examples = random.sample(examples, min(5000, len(examples)))
                 if split_tag == 'train':
@@ -173,8 +175,9 @@ def get_filenames(data_root, task, sub_task, split=''):
     data_dir = '{}/{}'.format(data_root, task)
     train_fn = '{}/train_editor.jsonl'.format(data_dir)
     dev_fn = '{}/dev_editor.jsonl'.format(data_dir)
-    test_fn = '{}/test_editor.jsonl'.format(data_dir)
-    
+    # test_fn = '{}/test_editor.jsonl'.format(data_dir)
+    test_fn = '{}/test_with_sketch.jsonl'.format(data_dir)
+
     return train_fn, dev_fn, test_fn      
 
 

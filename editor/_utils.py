@@ -20,14 +20,32 @@ def add_lang_by_task(target_str, task, sub_task):
 
 def convert_examples_to_features(item):
     example, example_index, tokenizer, args, stage = item
+    # print(f"🚀 Loading data from: {filename}")
 
     if args.model_type in ['t5', 'codet5'] and args.add_task_prefix:
         if args.sub_task != 'none':
             source_str = "{} {}: {}".format(args.task, args.sub_task, example.source)
+            # print('first if ')
         else:
             source_str = "{}: {}".format(args.task, example.source)
+            # print('else')
     else:
+        # print('first else')
         source_str = example.source
+        # prompt = "Write a Python class that represents a Legendary minion card with the following properties: - Name: Vol'jin - Type: Minion - Class: Priest - Attack: 6 - Defense: 5 - Cost: -1 (This might indicate the card is free or has special cost mechanics) - Special Ability: Battlecry - Swap Health with another minion The class should inherit from `MinionCard` and use the following attributes and methods: - `__init__(self)`: Initialize the card with the name, attack, defense, cost, and special ability. - `create_minion(self, player)`: Create a minion using the specified attributes. - The class should include any necessary imports and handle edge cases, such as ensuring valid player input for abilities and health swaps. The class should also include a simple representation of the card for debugging or logging purposes. Please provide this implementation in a clean, Pythonic format with proper comments."
+        # source_str += prompt 
+        # print(example.oracle_sketch)
+        if hasattr(example, "oracle_sketch"):  # Ensure sketch is included if it exists
+            # print('second if')
+            max_sketch_items = 1
+            # sketch_str = " ".join(example.oracle_sketch[:max_sketch_items])
+            # sketch_str = " ".join(example.oracle_sketch[2:3])
+            sketch_str = " ".join(example.oracle_sketch)
+            source_str += " [SEP] " + sketch_str
+            # print(sketch_str)
+            # raise ValueError(sketch_str)
+
+
 
     source_str = source_str.replace('</s>', '<unk>')
     source_ids = tokenizer.encode(source_str, max_length=args.max_source_length, padding='max_length', truncation=True)
@@ -136,7 +154,9 @@ class Example(object):
                  target,
                  url=None,
                  task='',
-                 sub_task=''
+                 sub_task='', 
+                 sketch=None, 
+                 oracle_sketch=None
                  ):
         self.idx = idx
         self.source = source
@@ -144,6 +164,8 @@ class Example(object):
         self.url = url
         self.task = task
         self.sub_task = sub_task
+        self.sketch = sketch
+        self.oracle_sketch = oracle_sketch
 
 
 class CloneExample(object):
@@ -175,11 +197,18 @@ def read_CG_examples(filename, data_num):
             elif 'input' in js and 'output' in js:
                 source = js['input']
                 target = js['output']
+            if "oracle-sketch" in js:
+                oracle_sketch = js["oracle-sketch"]
+            else:
+                oracle_sketch = None
+
             examples.append(
                 Example(
                     idx=idx,
                     source=source,
-                    target=target)
+                    target=target,
+                    sketch=js.get("sketch", None),
+                    oracle_sketch=oracle_sketch)
             )
             if idx+1 == data_num:
                 break

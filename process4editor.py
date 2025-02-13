@@ -3,7 +3,8 @@ import fire
 
 
 def main(data_path=""):
-    for prefix in ['train', 'dev', 'test']:
+    # for prefix in ['train', 'dev', 'test']:
+    for prefix in [ 'test']:
         with open(f'{data_path}/{prefix}_with_sketch.jsonl', 'r') as f_r, open(f'{data_path}/{prefix}_editor.jsonl', 'w') as f_w:
             for line in f_r:
                 js = json.loads(line)

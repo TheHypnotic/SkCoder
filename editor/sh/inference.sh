@@ -1,6 +1,7 @@
 # ROOT_DIR="/home/xxx/SkCoder"
 ROOT_DIR="/content/SkCoder"
-
+ROOT_DIR="/home/darius/dsse/SkCoder"
+# /home/darius/dsse/SkCoder
 WORKDIR=${ROOT_DIR}/editor
 export PYTHONPATH=$WORKDIR
 

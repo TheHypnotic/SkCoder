@@ -10,9 +10,7 @@ from typing import Optional
 
 import datasets
 import numpy as np
-# from datasets import ClassLabel, load_dataset, load_metric
-from datasets import ClassLabel, load_dataset
-from evaluate import load as load_metric
+from datasets import ClassLabel, load_dataset, load_metric
 
 import transformers
 from transformers import (
@@ -28,6 +26,7 @@ from transformers import (
   set_seed,
 )
 from transformers.trainer_utils import get_last_checkpoint
+from evaluate import load
 
 
 
@@ -391,6 +390,8 @@ def main():
 
   # Metrics
   # metric = load_metric("eval.py")
+  metric = load("eval.py")
+  
 
   def compute_metrics(p):
     predictions, labels = p
